@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc -w",
-    "start": "concurrent \"npm run tsc\" \"nodemon ./server.js\""
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "start-dev": "concurrent \"npm run tsc:w\" \"nodemon ./server.js\"",
+    "start": "npm install && npm run tsc && node server.js"
   },
   "author": "",
   "license": "ISC",
