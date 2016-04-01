@@ -7,7 +7,7 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "start-dev": "concurrent \"npm run tsc:w\" \"nodemon ./server.js\"",
-    "start": "npm install && npm run tsc && node server.js"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
