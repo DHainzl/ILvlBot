@@ -1,0 +1,18 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				
+				"bot/*.js.map",
+				"server.js"
+			],
+			"folder_exclude_patterns":
+			[
+				"node_modules"
+			],
+			"path": "."
+		}
+	]
+}

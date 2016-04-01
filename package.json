@@ -1,0 +1,22 @@
+{
+  "name": "ilvlbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc -w",
+    "start": "concurrent \"npm run tsc\" \"nodemon ./server.js\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "battlenet-api": "^0.11.0",
+    "botbuilder": "^0.6.2",
+    "nodemon": "^1.9.1",
+    "restify": "^4.0.4"
+  },
+  "devDependencies": {
+    "concurrently": "^2.0.0",
+    "typescript": "^1.8.9"
+  }
+}
