@@ -100,6 +100,7 @@ call :SelectNodeVersion
 :: 3. Install npm packages
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd "%DEPLOYMENT_TARGET%"
+  call :ExecuteCmd !NPM_CMD! install tsd -g
   call :ExecuteCmd !NPM_CMD! install
   call :ExecuteCmd !NPM_CMD! run tsc
   call :ExecuteCmd !NPM_CMD! start
