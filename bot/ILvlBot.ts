@@ -21,8 +21,6 @@ export class ILvlBot <T extends DialogCollection> {
 	constructor(bot: T, luisId: string, luisKey: string, battlenetKey: string) {
 		this.bot = bot;
         this.luisUrl = this.generateLUISUrl(luisId, luisKey);
-		console.log('heyo');
-		console.log('luisUrl is ', this.luisUrl);
         this.bnet = require('battlenet-api')(battlenetKey);
 		
         this.addDialogs();
@@ -30,6 +28,7 @@ export class ILvlBot <T extends DialogCollection> {
 
     addDialogs() {
         let dialog = new LuisDialog(this.luisUrl);
+		console.log('dialog is ', dialog);
         this.bot.add('/', dialog);
         
         dialog.on('FindItemLevel', [
@@ -43,6 +42,7 @@ export class ILvlBot <T extends DialogCollection> {
     }
     
     private processLanguage(session: Session, args, next) {
+		console.log('processing language');
         var name = EntityRecognizer.findEntity(args.entities, 'CharacterName');
         var realm = EntityRecognizer.findEntity(args.entities, 'RealmName');
         
@@ -59,6 +59,7 @@ export class ILvlBot <T extends DialogCollection> {
     }
     
     private getCharacterName(session: Session, results, next) {
+		console.log('getcharname');
         var charData = session.dialogData.character;
         
         if (results.response) {
