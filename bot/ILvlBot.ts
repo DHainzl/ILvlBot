@@ -10,18 +10,19 @@ import {
 } from 'botbuilder';
 
 var bnet = require('battlenet-api');
+var http = require('http');
 
 export class ILvlBot <T extends DialogCollection> {
 	bot: T;
     getBot(): T { return this.bot; }
     
     luisUrl: string;
-	bnet;
+	battlenetKey: string;
 
 	constructor(bot: T, luisId: string, luisKey: string, battlenetKey: string) {
 		this.bot = bot;
         this.luisUrl = this.generateLUISUrl(luisId, luisKey);
-        this.bnet = require('battlenet-api')(battlenetKey);
+        this.battlenetKey = battlenetKey;
 		
         this.addDialogs();
 	}
@@ -93,14 +94,25 @@ export class ILvlBot <T extends DialogCollection> {
             session.send('No realm given ...');
         } else {
 			console.log('got data, sending it to battle net');
-            this.bnet.wow.character.items({origin: 'eu', realm: charData.realm, name: charData.name}, (err, body, res) => {
-				console.log('got data from battle net!');
+            this.getItems(charData.name, charData.realm, (err, body) => {
+				console.log('got data from battle net!', body);
 				session.send(`${charData.name}@${charData.realm} has an item level of ${body.items.averageItemLevelEquipped}/${body.items.averageItemLevel}`);
-            }); 
+            });
         } 
     }
 	
 	private generateLUISUrl(id: string, key: string): string {
 		return `https://api.projectoxford.ai/luis/v1/application?id=${id}&&subscription-key=${key}`;
+	}
+	private getItems(name: string, realm: string, cb: (err: string, data: any) => void) {
+		let url = `https://eu.api.battle.net/wow/character/${realm}/${name}?fields=items&locale=en_GB&apikey=${this.battlenetKey}`;
+		let body = '';
+
+		http.get(url, function(res) {
+			res.on('data', chunk => body += chunk);
+			res.on('end', () => cb(null, body));
+		}).on('error', function(err) {
+			cb(err, null);
+		});
 	}
 }
