@@ -105,6 +105,7 @@ export class ILvlBot <T extends DialogCollection> {
 		return `https://api.projectoxford.ai/luis/v1/application?id=${id}&&subscription-key=${key}`;
 	}
 	private getItems(name: string, realm: string, cb: (err: string, data: any) => void) {
+		console.log('starting get items', arguments);
 		let url = `https://eu.api.battle.net/wow/character/${realm}/${name}?fields=items&locale=en_GB&apikey=${this.battlenetKey}`;
 		let body = '';
 		
