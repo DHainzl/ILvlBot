@@ -94,6 +94,7 @@ export class ILvlBot <T extends DialogCollection> {
             session.send('No realm given ...');
         } else {
 			console.log('got data, sending it to battle net');
+			console.log('this', this, this.getItems);
             this.getItems(charData.name, charData.realm, (err, body) => {
 				console.log('got data from battle net!', body);
 				session.send(`${charData.name}@${charData.realm} has an item level of ${body.items.averageItemLevelEquipped}/${body.items.averageItemLevel}`);
