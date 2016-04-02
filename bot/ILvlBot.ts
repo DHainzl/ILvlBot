@@ -21,6 +21,8 @@ export class ILvlBot <T extends DialogCollection> {
 	constructor(bot: T, luisId: string, luisKey: string, battlenetKey: string) {
 		this.bot = bot;
         this.luisUrl = this.generateLUISUrl(luisId, luisKey);
+		console.log('heyo');
+		console.log('luisUrl is ', this.luisUrl);
         this.bnet = require('battlenet-api')(battlenetKey);
 		
         this.addDialogs();
