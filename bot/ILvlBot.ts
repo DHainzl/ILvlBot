@@ -107,6 +107,8 @@ export class ILvlBot <T extends DialogCollection> {
 	private getItems(name: string, realm: string, cb: (err: string, data: any) => void) {
 		let url = `https://eu.api.battle.net/wow/character/${realm}/${name}?fields=items&locale=en_GB&apikey=${this.battlenetKey}`;
 		let body = '';
+		
+		console.log('Getting', url);
 
 		http.get(url, function(res) {
 			res.on('data', chunk => body += chunk);
