@@ -59,8 +59,8 @@ export class ILvlBot <T extends DialogCollection> {
     }
     
     private getCharacterName(session: Session, results, next) {
-		console.log('getcharname');
         var charData = session.dialogData.character;
+		console.log('getcharname', charData);
         
         if (results.response) {
             charData.name = results.response;
@@ -75,7 +75,8 @@ export class ILvlBot <T extends DialogCollection> {
     
     private getRealm(session: Session, results, next) {
         var charData = session.dialogData.character;
-        
+        console.log('getrealm', charData);
+		
         if (results.response) {
             charData.realm = results.response;
         }  
@@ -84,13 +85,16 @@ export class ILvlBot <T extends DialogCollection> {
     
     private getIlvl(session: Session, args, next) {
         var charData = session.dialogData.character;
-        
+        console.log('getilvl', charData);
+		
         if (!charData.name) {
             session.send('No name given ...');
         } else if (!charData.realm) {
             session.send('No realm given ...');
-        } else {        
+        } else {
+			console.log('got data, sending it to battle net');
             this.bnet.wow.character.items({origin: 'eu', realm: charData.realm, name: charData.name}, (err, body, res) => {
+				console.log('got data from battle net!');
 				session.send(`${charData.name}@${charData.realm} has an item level of ${body.items.averageItemLevelEquipped}/${body.items.averageItemLevel}`);
             }); 
         } 
