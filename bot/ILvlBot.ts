@@ -88,7 +88,7 @@ export class ILvlBot <T extends DialogCollection> {
     private getIlvl(session: Session, args, next) {
         var charData = session.dialogData.character;
         console.log('getilvl', charData);
-		console.log('bnet key', this.battlenetKey);
+		console.log('bnet key', bnetKey);
 		
         if (!charData.name) {
             session.send('No name given ...');
@@ -100,9 +100,14 @@ export class ILvlBot <T extends DialogCollection> {
 				origin: 'eu',
 				realm: 'antonidas',
 				name: 'hoazl'
-			}, bnetKey, function (_, body) {
-				console.log('Got data!');
-				session.send(`${charData.name}@${charData.realm} has an item level of ${body.items.averageItemLevelEquipped}/${body.items.averageItemLevel}`);
+			}, bnetKey, function (err, body) {
+				if (err) {
+					console.log(err);
+					session.send('Error getting data from battle.net ....');
+				} else {			
+					console.log('Got data!');
+					session.send(`${charData.name}@${charData.realm} has an item level of ${body.items.averageItemLevelEquipped}/${body.items.averageItemLevel}`);
+				}
             });
         }
     }
