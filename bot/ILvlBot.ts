@@ -25,7 +25,7 @@ export class ILvlBot <T extends DialogCollection> {
         this.luisUrl = this.generateLUISUrl(luisId, luisKey);
         this.battlenetKey = battlenetKey;
 		bnetKey = battlenetKey;
-		
+		console.log('constructor', bnetKey);
         this.addDialogs();
 	}
 
