@@ -10,7 +10,8 @@ import {
 } from 'botbuilder';
 
 var bnet = require('battlenet-api');
-var http = require('http');
+var request = require('request');
+var bnetKey: string = '';
 
 export class ILvlBot <T extends DialogCollection> {
 	bot: T;
@@ -23,14 +24,14 @@ export class ILvlBot <T extends DialogCollection> {
 		this.bot = bot;
         this.luisUrl = this.generateLUISUrl(luisId, luisKey);
         this.battlenetKey = battlenetKey;
+		bnetKey = battlenetKey;
 		
         this.addDialogs();
 	}
 
     addDialogs() {
         let dialog = new LuisDialog(this.luisUrl);
-		console.log('dialog is ', dialog);
-        this.bot.add('/', dialog);
+		this.bot.add('/', dialog);
         
         dialog.on('FindItemLevel', [
             this.processLanguage,
@@ -38,7 +39,7 @@ export class ILvlBot <T extends DialogCollection> {
             this.getRealm,
             this.getIlvl
         ]);
-        
+		
         dialog.onDefault(DialogAction.send("I could not understand your request."));
     }
     
@@ -87,6 +88,7 @@ export class ILvlBot <T extends DialogCollection> {
     private getIlvl(session: Session, args, next) {
         var charData = session.dialogData.character;
         console.log('getilvl', charData);
+		console.log('bnet key', this.battlenetKey);
 		
         if (!charData.name) {
             session.send('No name given ...');
@@ -94,29 +96,18 @@ export class ILvlBot <T extends DialogCollection> {
             session.send('No realm given ...');
         } else {
 			console.log('got data, sending it to battle net');
-			console.log('this', this, this.getItems);
-            this.getItems(charData.name, charData.realm, (err, body) => {
-				console.log('got data from battle net!', body);
+			bnet.wow.character.items({
+				origin: 'eu',
+				realm: 'antonidas',
+				name: 'hoazl'
+			}, bnetKey, function (_, body) {
+				console.log('Got data!');
 				session.send(`${charData.name}@${charData.realm} has an item level of ${body.items.averageItemLevelEquipped}/${body.items.averageItemLevel}`);
             });
-        } 
+        }
     }
 	
 	private generateLUISUrl(id: string, key: string): string {
 		return `https://api.projectoxford.ai/luis/v1/application?id=${id}&&subscription-key=${key}`;
-	}
-	private getItems(name: string, realm: string, cb: (err: string, data: any) => void) {
-		console.log('starting get items', arguments);
-		let url = `https://eu.api.battle.net/wow/character/${realm}/${name}?fields=items&locale=en_GB&apikey=${this.battlenetKey}`;
-		let body = '';
-		
-		console.log('Getting', url);
-
-		http.get(url, function(res) {
-			res.on('data', chunk => body += chunk);
-			res.on('end', () => cb(null, body));
-		}).on('error', function(err) {
-			cb(err, null);
-		});
 	}
 }

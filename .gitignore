@@ -38,5 +38,5 @@ jspm_packages
 .node_repl_history
 
 *.sublime-workspace
-server.js
-server.js.map
+app.js
+app.js.map
