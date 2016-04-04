@@ -10,8 +10,7 @@ import {
 } from 'botbuilder';
 
 var bnet = require('battlenet-api');
-var request = require('request');
-var bnetKey: string = '';
+var bnetKey;
 
 export class ILvlBot <T extends DialogCollection> {
 	bot: T;
@@ -24,14 +23,15 @@ export class ILvlBot <T extends DialogCollection> {
 		this.bot = bot;
         this.luisUrl = this.generateLUISUrl(luisId, luisKey);
         this.battlenetKey = battlenetKey;
-		bnetKey = battlenetKey;
-		console.log('constructor', bnetKey);
+		bnetKey = this.battlenetKey;
+		
         this.addDialogs();
 	}
 
     addDialogs() {
         let dialog = new LuisDialog(this.luisUrl);
-		this.bot.add('/', dialog);
+		console.log('dialog is ', dialog);
+        this.bot.add('/', dialog);
         
         dialog.on('FindItemLevel', [
             this.processLanguage,
@@ -39,7 +39,7 @@ export class ILvlBot <T extends DialogCollection> {
             this.getRealm,
             this.getIlvl
         ]);
-		
+        
         dialog.onDefault(DialogAction.send("I could not understand your request."));
     }
     
@@ -88,7 +88,6 @@ export class ILvlBot <T extends DialogCollection> {
     private getIlvl(session: Session, args, next) {
         var charData = session.dialogData.character;
         console.log('getilvl', charData);
-		console.log('bnet key', bnetKey);
 		
         if (!charData.name) {
             session.send('No name given ...');
@@ -96,20 +95,21 @@ export class ILvlBot <T extends DialogCollection> {
             session.send('No realm given ...');
         } else {
 			console.log('got data, sending it to battle net');
+			
 			bnet.wow.character.items({
 				origin: 'eu',
 				realm: 'antonidas',
 				name: 'hoazl'
-			}, bnetKey, function (err, body) {
+			}, function (err, data) {
 				if (err) {
-					console.log(err);
-					session.send('Error getting data from battle.net ....');
-				} else {			
-					console.log('Got data!');
-					session.send(`${charData.name}@${charData.realm} has an item level of ${body.items.averageItemLevelEquipped}/${body.items.averageItemLevel}`);
+					console.log('Error!', err);
+					session.send('An error occured ..');
+				} else {
+					console.log('got data from battle net');
+					session.send(data);					
 				}
-            });
-        }
+			});
+        } 
     }
 	
 	private generateLUISUrl(id: string, key: string): string {
